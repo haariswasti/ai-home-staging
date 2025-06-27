@@ -1,0 +1,8 @@
+torch
+torchvision
+opencv-python
+scikit-learn
+numpy
+matplotlib
+jupyterlab
+label-studio /cvat
