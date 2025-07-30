@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}AI Staging Results - AI Home Staging{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-magic me-2"></i>AI Staging Results</h3>
+                <p class="text-muted mb-0">Here are the most similar staged bedroom designs for your room</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Original Image -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header text-center">
+                <h5><i class="fas fa-camera me-2"></i>Your Bedroom</h5>
+            </div>
+            <div class="card-body text-center">
+                <img src="{{ url_for('uploaded_file', filename=original_image) }}" 
+                     class="img-fluid rounded" alt="Your bedroom" style="max-height: 400px; object-fit: cover;">
+                <p class="mt-3 text-muted">Your uploaded bedroom photo</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Suggestions -->
+    <div class="col-md-8">
+        <div class="row">
+            {% for result in results %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 result-card">
+                    <div class="card-header text-center">
+                        <h6><i class="fas fa-star me-2"></i>Match #{{ result.rank }}</h6>
+                        <div class="badge bg-primary">{{ "%.1f"|format(result.similarity * 100) }}% Match</div>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{ url_for('data_file', filename='staged bedroom/' + result.image_name) }}" 
+                             class="img-fluid rounded mb-3" alt="Staged bedroom" style="height: 250px; object-fit: cover;">
+                        
+                        <h6 class="card-title">{{ result.image_name.replace('.jpeg', '').replace('.jpg', '').replace('_', ' ').title() }}</h6>
+                        
+                        <div class="mt-3">
+                            <button class="btn btn-outline-primary btn-sm" onclick="showStagingTips({{ result.rank }})">
+                                <i class="fas fa-lightbulb me-1"></i>Staging Tips
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Staging Tips Modal -->
+<div class="modal fade" id="stagingTipsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-lightbulb me-2"></i>Staging Tips</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="stagingTipsContent">
+                    <!-- Tips will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mt-4">
+    <div class="col-12 text-center">
+        <a href="{{ url_for('upload') }}" class="btn btn-primary btn-lg me-3">
+            <i class="fas fa-upload me-2"></i>Upload Another Photo
+        </a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-lg">
+            <i class="fas fa-home me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<script>
+function showStagingTips(rank) {
+    const tips = {
+        1: `
+            <h6>Premium Staging Tips for Match #1:</h6>
+            <ul>
+                <li><strong>Color Palette:</strong> Use neutral tones with warm accents</li>
+                <li><strong>Furniture:</strong> Start with a bed frame, nightstands, and a dresser</li>
+                <li><strong>Lighting:</strong> Add bedside lamps and overhead lighting</li>
+                <li><strong>Textiles:</strong> Include bedding, curtains, and area rugs</li>
+                <li><strong>Accessories:</strong> Add decorative pillows, artwork, and plants</li>
+            </ul>
+        `,
+        2: `
+            <h6>Modern Staging Tips for Match #2:</h6>
+            <ul>
+                <li><strong>Minimalist Approach:</strong> Keep furniture clean and simple</li>
+                <li><strong>Storage:</strong> Include built-in or freestanding storage solutions</li>
+                <li><strong>Accent Wall:</strong> Consider a feature wall with paint or wallpaper</li>
+                <li><strong>Mirrors:</strong> Add mirrors to create the illusion of more space</li>
+                <li><strong>Greenery:</strong> Include low-maintenance plants for life</li>
+            </ul>
+        `,
+        3: `
+            <h6>Cozy Staging Tips for Match #3:</h6>
+            <ul>
+                <li><strong>Layered Bedding:</strong> Use multiple layers for a luxurious feel</li>
+                <li><strong>Soft Lighting:</strong> Create ambient lighting with multiple sources</li>
+                <li><strong>Texture:</strong> Mix different textures for visual interest</li>
+                <li><strong>Personal Touches:</strong> Add family photos or meaningful artwork</li>
+                <li><strong>Comfort:</strong> Include a reading chair or seating area</li>
+            </ul>
+        `
+    };
+    
+    document.getElementById('stagingTipsContent').innerHTML = tips[rank] || '<p>Tips coming soon...</p>';
+    new bootstrap.Modal(document.getElementById('stagingTipsModal')).show();
+}
+</script>
+{% endblock %} 

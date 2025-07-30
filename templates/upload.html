@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Bedroom Photo - AI Home Staging{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-upload me-2"></i>Upload Your Room Photo</h3>
+                <p class="text-muted mb-0">Upload a photo of your empty room to get AI-powered staging suggestions</p>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="upload-area mb-4">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                        <h5>Choose a photo of your room</h5>
+                        <p class="text-muted">Supported formats: JPG, PNG, JPEG (Max 16MB)</p>
+                        <p class="text-muted"><strong>Important:</strong> Please select the correct room type below for accurate AI matches.</p>
+                        <input type="file" name="file" class="form-control" accept="image/*" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="room_type" class="form-label">Room Type</label>
+                        <select class="form-select" id="room_type" name="room_type" required>
+                            <option value="">Select a room type...</option>
+                            {% for rt in room_types %}
+                                <option value="{{ rt }}">{{ rt.replace('_', ' ').title() }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-magic me-2"></i>Analyze with AI
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-lightbulb me-2"></i>Tips for Best Results</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Take photos in good lighting</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Capture the entire room from a corner</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Make sure the room is empty or mostly empty</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Keep the camera steady and level</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

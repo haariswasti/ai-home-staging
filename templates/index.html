@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}AI Home Staging - Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-home me-2"></i>AI Home Staging Dashboard</h3>
+                <p class="text-muted mb-0">Welcome to your home staging control center!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar me-2"></i>Project & Inventory Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-2 mb-2">
+                        <h4 class="text-primary">{{ total_houses }}</h4>
+                        <small class="text-muted">Total Houses</small>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <h4 class="text-info">{{ upcoming_houses }}</h4>
+                        <small class="text-muted">Upcoming</small>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <h4 class="text-primary">{{ staged_houses }}</h4>
+                        <small class="text-muted">Staged</small>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <h4 class="text-success">{{ completed_houses }}</h4>
+                        <small class="text-muted">Completed</small>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <h4 class="text-warning">{{ inventory_in_use }}</h4>
+                        <small class="text-muted">Inventory In Use</small>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <h4 class="text-info">{{ inventory_items|sum(attribute='quantity') }}</h4>
+                        <small class="text-muted">Total Inventory</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <a href="{{ url_for('add_house') }}" class="btn btn-primary btn-lg me-2"><i class="fas fa-plus me-2"></i>Add House</a>
+        <a href="{{ url_for('houses') }}" class="btn btn-outline-primary btn-lg me-2"><i class="fas fa-list me-2"></i>View Projects</a>
+        <a href="{{ url_for('inventory') }}" class="btn btn-outline-secondary btn-lg"><i class="fas fa-warehouse me-2"></i>Inventory</a>
+    </div>
+</div>
+{% endif %}
+
+{% if not user %}
+<div class="row">
+    <div class="col-12 text-center">
+        <h4 class="mb-4">Welcome to AI Home Staging!</h4>
+        <p class="lead">Login or register to start managing your staging projects and inventory.</p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-2">Login</a>
+        <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg">Register</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

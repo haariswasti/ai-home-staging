@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+
+{% block title %}Pre-Stage Helper - AI Home Staging{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-calculator me-2"></i>Pre-Stage Helper</h3>
+                <p class="text-muted mb-0">Customize and calculate furniture requirements for your staging project</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-home me-2"></i>Room Configuration</h5>
+                <button id="voice-btn" class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-microphone"></i> <span id="voice-status">Voice</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('calculate_prestage') }}" method="POST" id="prestage-form">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label"><i class="fas fa-bed me-2"></i>King Bedrooms</label>
+                            <input type="number" class="form-control" name="king_bedrooms" value="0" min="0" max="10" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label"><i class="fas fa-bed me-2"></i>Queen Bedrooms</label>
+                            <input type="number" class="form-control" name="queen_bedrooms" value="0" min="0" max="10" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label"><i class="fas fa-bed me-2"></i>Full Bedrooms</label>
+                            <input type="number" class="form-control" name="full_bedrooms" value="0" min="0" max="10" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label"><i class="fas fa-bed me-2"></i>Twin Bedrooms</label>
+                            <input type="number" class="form-control" name="twin_bedrooms" value="0" min="0" max="10" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label"><i class="fas fa-bed me-2"></i>Twin Bedroom Options</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="twin_desk_chair" id="twin_desk_chair">
+                                <label class="form-check-label" for="twin_desk_chair">Desk & Chair</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="twin_teepee" id="twin_teepee">
+                                <label class="form-check-label" for="twin_teepee">Teepee</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="twin_toybasket" id="twin_toybasket">
+                                <label class="form-check-label" for="twin_toybasket">Toy Basket</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label"><i class="fas fa-couch me-2"></i>Living Rooms</label>
+                            <input type="number" class="form-control" name="living_rooms" value="0" min="0" max="5" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label"><i class="fas fa-briefcase me-2"></i>Offices</label>
+                            <input type="number" class="form-control" name="offices" value="0" min="0" max="3" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label"><i class="fas fa-tree me-2"></i>Outdoor Rooms</label>
+                            <input type="number" class="form-control" name="outdoor_rooms" value="0" min="0" max="5" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label"><i class="fas fa-utensils me-2"></i>Dining Rooms</label>
+                            <input type="number" class="form-control" name="dining_rooms" value="0" min="0" max="3" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label"><i class="fas fa-couch me-2"></i>Living Room Options</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="loveseat" id="loveseat">
+                                <label class="form-check-label" for="loveseat">Include Loveseat</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label"><i class="fas fa-utensils me-2"></i>Dining Room Table Options</label>
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <label class="form-label">Chairs</label>
+                                    <select class="form-select" name="dining_chair_count">
+                                        <option value="2">2</option>
+                                        <option value="4" selected>4</option>
+                                        <option value="6">6</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label class="form-label">Shape</label>
+                                    <select class="form-select" name="dining_table_shape" id="dining_table_shape">
+                                        <option value="rectangle" selected>Rectangle</option>
+                                        <option value="round">Round</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label class="form-label">Type</label>
+                                    <select class="form-select" name="dining_table_type">
+                                        <option value="glass">Glass</option>
+                                        <option value="glasswood">Glass/Wood</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label class="form-label">Size</label>
+                                    <select class="form-select" name="dining_table_size" id="dining_table_size">
+                                        <option value="48">48</option>
+                                        <option value="60">60</option>
+                                        <option value="72">72</option>
+                                        <option value="84">84</option>
+                                        <option value="36">36</option>
+                                        <option value="48r">48 (Round)</option>
+                                        <option value="54">54 (Round)</option>
+                                        <option value="58">58 (Round)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6 class="mb-3">Options & Additions</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="bedroom_bench_or_chairs" id="bedroom_bench_or_chairs" checked>
+                                <label class="form-check-label" for="bedroom_bench_or_chairs">
+                                    King/Queen Bedroom: <strong>Bench or 2 Accent Chairs</strong>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="outdoor_bench" id="outdoor_bench">
+                                <label class="form-check-label" for="outdoor_bench">
+                                    Outdoor: <strong>Bench (optional)</strong>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="extra_nightstand_twin" id="extra_nightstand_twin">
+                                <label class="form-check-label" for="extra_nightstand_twin">
+                                    Twin Bedroom: <strong>+ Extra Nightstand</strong>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-calculator me-2"></i>Calculate Requirements
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Reference Guide -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Furniture Requirements Guide</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-bed me-2"></i>King/Queen Bedroom:</h6>
+                        <ul class="list-unstyled">
+                            <li>• 1 Bed/Bedframe</li>
+                            <li>• 1 Mattress</li>
+                            <li>• 1 Headboard</li>
+                            <li>• 2 Nightstands</li>
+                            <li>• 1 Rug</li>
+                            <li>• 2 Accent Chairs <strong>and 1 Accent Table</strong> <em>(or Bench)</em></li>
+                            <li>• 1 Plant</li>
+                        </ul>
+                        <h6 class="mt-3"><i class="fas fa-bed me-2"></i>Full Bedroom:</h6>
+                        <ul class="list-unstyled">
+                            <li>• 1 Bed/Bedframe</li>
+                            <li>• 1 Mattress</li>
+                            <li>• 1 Headboard</li>
+                            <li>• 2 Nightstands</li>
+                            <li>• 1 Rug</li>
+                            <li>• 1 Accent Table</li>
+                            <li>• 1 Plant</li>
+                        </ul>
+                        <h6 class="mt-3"><i class="fas fa-bed me-2"></i>Twin Bedroom:</h6>
+                        <ul class="list-unstyled">
+                            <li>• 1 Bed/Bedframe</li>
+                            <li>• 1 Mattress</li>
+                            <li>• 1 Headboard</li>
+                            <li>• 1 Nightstand (or 2 if selected)</li>
+                            <li>• 1 Rug</li>
+                            <li>• 1 Plant</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-couch me-2"></i>Living Room:</h6>
+                        <ul class="list-unstyled">
+                            <li>• 1 Couch</li>
+                            <li>• 2 Side Tables</li>
+                            <li>• 2 Accent Chairs</li>
+                            <li>• 1 Coffee Table</li>
+                        </ul>
+                        <h6 class="mt-3"><i class="fas fa-tree me-2"></i>Outdoor:</h6>
+                        <ul class="list-unstyled">
+                            <li>• 1 Rug</li>
+                            <li>• 1 Table</li>
+                            <li>• 2 Chairs</li>
+                            <li>• Bench (optional)</li>
+                        </ul>
+                        <h6 class="mt-3"><i class="fas fa-briefcase me-2"></i>Office:</h6>
+                        <ul class="list-unstyled">
+                            <li>• 1 Desk</li>
+                            <li>• 1 Rug</li>
+                            <li>• 1 Chair</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Current Inventory Status -->
+{% if inventory %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-warehouse me-2"></i>Current Inventory Status</h5>
+                <a href="{{ url_for('inventory') }}" class="btn btn-sm btn-outline-primary">Manage Inventory</a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for item_type, quantity in inventory.items() %}
+                    <div class="col-md-3 mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>{{ item_type.title() }}:</span>
+                            <span class="badge bg-{{ 'success' if quantity > 0 else 'danger' }}">{{ quantity }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 
+
+<script>
+// Voice command support for Pre-Stage Helper
+const voiceBtn = document.getElementById('voice-btn');
+const voiceStatus = document.getElementById('voice-status');
+const form = document.getElementById('prestage-form');
+
+// Map spoken words to form field names
+const fieldMap = {
+    'king bedroom': 'king_bedrooms',
+    'king bedrooms': 'king_bedrooms',
+    'queen bedroom': 'queen_bedrooms',
+    'queen bedrooms': 'queen_bedrooms',
+    'twin bedroom': 'twin_bedrooms',
+    'twin bedrooms': 'twin_bedrooms',
+    'living room': 'living_rooms',
+    'living rooms': 'living_rooms',
+    'office': 'offices',
+    'offices': 'offices',
+    'outdoor': 'outdoor_rooms',
+    'outdoor room': 'outdoor_rooms',
+    'outdoor rooms': 'outdoor_rooms',
+    'dining room': 'dining_rooms',
+    'dining rooms': 'dining_rooms',
+};
+
+function parseVoiceInput(text) {
+    // Example: "add 3 king bedrooms, 2 queen bedrooms, 1 outdoor"
+    text = text.toLowerCase();
+    let found = false;
+    for (const [label, field] of Object.entries(fieldMap)) {
+        const regex = new RegExp(`(\d+)\s+${label}`);
+        const match = text.match(regex);
+        if (match) {
+            const value = parseInt(match[1]);
+            const input = form.elements[field];
+            if (input) {
+                input.value = value;
+                found = true;
+            }
+        }
+    }
+    // Handle options
+    if (text.includes('bench')) {
+        const bench = form.elements['bedroom_bench_or_chairs'];
+        if (bench) bench.checked = true;
+    }
+    if (text.includes('no bench')) {
+        const bench = form.elements['bedroom_bench_or_chairs'];
+        if (bench) bench.checked = false;
+    }
+    if (text.includes('outdoor bench')) {
+        const outdoorBench = form.elements['outdoor_bench'];
+        if (outdoorBench) outdoorBench.checked = true;
+    }
+    if (text.includes('no outdoor bench')) {
+        const outdoorBench = form.elements['outdoor_bench'];
+        if (outdoorBench) outdoorBench.checked = false;
+    }
+    if (text.includes('extra nightstand')) {
+        const extra = form.elements['extra_nightstand_twin'];
+        if (extra) extra.checked = true;
+    }
+    if (text.includes('no extra nightstand')) {
+        const extra = form.elements['extra_nightstand_twin'];
+        if (extra) extra.checked = false;
+    }
+    return found;
+}
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    voiceBtn.onclick = function() {
+        voiceStatus.textContent = 'Listening...';
+        voiceBtn.classList.add('active');
+        recognition.start();
+    };
+
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        voiceStatus.textContent = 'Voice';
+        voiceBtn.classList.remove('active');
+        if (parseVoiceInput(transcript)) {
+            voiceStatus.textContent = '✔';
+            setTimeout(() => { voiceStatus.textContent = 'Voice'; }, 1500);
+        } else {
+            voiceStatus.textContent = 'Try again';
+            setTimeout(() => { voiceStatus.textContent = 'Voice'; }, 1500);
+        }
+    };
+    recognition.onerror = function() {
+        voiceStatus.textContent = 'Voice';
+        voiceBtn.classList.remove('active');
+    };
+    recognition.onend = function() {
+        voiceStatus.textContent = 'Voice';
+        voiceBtn.classList.remove('active');
+    };
+} else {
+    voiceBtn.disabled = true;
+    voiceStatus.textContent = 'Not supported';
+}
+</script> 

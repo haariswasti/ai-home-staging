@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Add New House - AI Home Staging{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-plus me-2"></i>Add New House</h3>
+            </div>
+            <form action="{{ url_for('add_house') }}" method="POST">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">House Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 mb-3">
+                            <label for="num_bedrooms" class="form-label">Total Bedrooms</label>
+                            <input type="number" class="form-control" id="num_bedrooms" name="num_bedrooms" value="0" min="0">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="num_living_rooms" class="form-label">Living Rooms</label>
+                            <input type="number" class="form-control" id="num_living_rooms" name="num_living_rooms" value="0" min="0">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="num_dining_rooms" class="form-label">Dining Rooms</label>
+                            <input type="number" class="form-control" id="num_dining_rooms" name="num_dining_rooms" value="0" min="0">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="upcoming" selected>Upcoming</option>
+                                <option value="staged">Staged</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Pre-Stage Helper Room Breakdown -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6><i class="fas fa-calculator me-2"></i>Pre-Stage Helper: Room Breakdown</h6>
+                            <small class="text-muted">Use this section to automatically calculate inventory requirements</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="king_bedrooms" class="form-label">King Bedrooms</label>
+                                    <input type="number" class="form-control" id="king_bedrooms" name="king_bedrooms" value="0" min="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="queen_bedrooms" class="form-label">Queen Bedrooms</label>
+                                    <input type="number" class="form-control" id="queen_bedrooms" name="queen_bedrooms" value="0" min="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="full_bedrooms" class="form-label">Full Bedrooms</label>
+                                    <input type="number" class="form-control" id="full_bedrooms" name="full_bedrooms" value="0" min="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="twin_bedrooms" class="form-label">Twin Bedrooms</label>
+                                    <input type="number" class="form-control" id="twin_bedrooms" name="twin_bedrooms" value="0" min="0">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="offices" class="form-label">Offices</label>
+                                    <input type="number" class="form-control" id="offices" name="offices" value="0" min="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="outdoor_rooms" class="form-label">Outdoor Rooms</label>
+                                    <input type="number" class="form-control" id="outdoor_rooms" name="outdoor_rooms" value="0" min="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="dining_chair_count" class="form-label">Dining Chairs per Table</label>
+                                    <input type="number" class="form-control" id="dining_chair_count" name="dining_chair_count" value="4" min="2" max="12">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="dining_table_shape" class="form-label">Dining Table Shape</label>
+                                    <select class="form-select" id="dining_table_shape" name="dining_table_shape">
+                                        <option value="rectangle" selected>Rectangle</option>
+                                        <option value="round">Round</option>
+                                        <option value="oval">Oval</option>
+                                        <option value="square">Square</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Option Toggles -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6 class="mb-2">Options:</h6>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="bedroom_bench_or_chairs" name="bedroom_bench_or_chairs">
+                                        <label class="form-check-label" for="bedroom_bench_or_chairs">Accent Chairs (instead of benches)</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="loveseat" name="loveseat">
+                                        <label class="form-check-label" for="loveseat">Living Room Loveseat</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="outdoor_bench" name="outdoor_bench">
+                                        <label class="form-check-label" for="outdoor_bench">Outdoor Bench</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="extra_nightstand_twin" name="extra_nightstand_twin">
+                                        <label class="form-check-label" for="extra_nightstand_twin">Extra Twin Nightstand</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="twin_desk_chair" name="twin_desk_chair">
+                                        <label class="form-check-label" for="twin_desk_chair">Twin Desk & Chair</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="twin_teepee" name="twin_teepee">
+                                        <label class="form-check-label" for="twin_teepee">Twin Teepee</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="twin_toybasket" name="twin_toybasket">
+                                        <label class="form-check-label" for="twin_toybasket">Twin Toy Basket</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="scheduled_date" class="form-label">Scheduled Date</label>
+                            <input type="date" class="form-control" id="scheduled_date" name="scheduled_date">
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5 class="mb-3"><i class="fas fa-couch me-2"></i>Additional Inventory Assignment</h5>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Automatic Calculation:</strong> Inventory will be automatically calculated based on the Pre-Stage Helper room breakdown above. 
+                        Use the dropdown below to add any extra items if needed.
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="extra_item_type" class="form-label">Item Type</label>
+                            <select class="form-select" id="extra_item_type">
+                                <option value="">Select an item...</option>
+                                {% for item in inventory %}
+                                <option value="{{ item.id }}" data-max="{{ item.quantity }}">{{ item.item_type.title() }} ({{ item.quantity }} available)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="extra_item_quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="extra_item_quantity" value="1" min="1" max="100">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="button" class="btn btn-outline-primary d-block" onclick="addExtraItem()">
+                                <i class="fas fa-plus me-2"></i>Add Item
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="extra_items_container" class="mb-3">
+                        <!-- Dynamically added items will appear here -->
+                    </div>
+                    
+                    <script>
+                        function addExtraItem() {
+                            const select = document.getElementById('extra_item_type');
+                            const quantity = document.getElementById('extra_item_quantity');
+                            const container = document.getElementById('extra_items_container');
+                            
+                            if (!select.value) {
+                                alert('Please select an item type');
+                                return;
+                            }
+                            
+                            const selectedOption = select.options[select.selectedIndex];
+                            const itemId = select.value;
+                            const itemName = selectedOption.text.split(' (')[0];
+                            const maxQuantity = parseInt(selectedOption.dataset.max);
+                            const qty = parseInt(quantity.value);
+                            
+                            if (qty > maxQuantity) {
+                                alert(`Maximum available quantity is ${maxQuantity}`);
+                                return;
+                            }
+                            
+                            // Check if item already added
+                            if (document.querySelector(`input[name="inventory_${itemId}"]`)) {
+                                alert('This item has already been added');
+                                return;
+                            }
+                            
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = 'alert alert-light border d-flex justify-content-between align-items-center mb-2';
+                            itemDiv.innerHTML = `
+                                <div>
+                                    <strong>${itemName}</strong> - Quantity: ${qty}
+                                    <input type="hidden" name="inventory_${itemId}" value="${qty}">
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.parentElement.remove()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            
+                            container.appendChild(itemDiv);
+                            
+                            // Reset form
+                            select.value = '';
+                            quantity.value = 1;
+                        }
+                    </script>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{{ url_for('houses') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Add House</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 
