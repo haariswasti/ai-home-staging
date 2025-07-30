@@ -5,7 +5,7 @@ class FeatureExtractor(torch.nn.Module):
     """Wraps a pretrained ResNet-50 to output a 1×2048 feature vector."""
     def __init__(self):
         super().__init__()
-        backbone = models.resnet50(pretrained=True)
+        backbone = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
         self.features = torch.nn.Sequential(*list(backbone.children())[:-1])
 
     def forward(self, x):

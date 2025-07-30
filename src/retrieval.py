@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
-def retrival(query_emb, gallery_embs, top_k=3):
+def retrieve(query_emb, gallery_embs, top_k=3):
     """
     Retrieve the top_k most similar gallery embeddings to the query embedding.
     
@@ -11,11 +11,11 @@ def retrival(query_emb, gallery_embs, top_k=3):
         top_k (int): The number of top similar images to retrieve.
         
     Returns:
-        np.ndarray: Indices of the top_k most similar gallery embeddings.
+        tuple: (indices, similarities) of the top_k most similar gallery embeddings.
     """
     # Compute cosine similarity between query and gallery embeddings
     sims = cosine_similarity(query_emb, gallery_embs)
     
-    # Get indices of the top_k most similar embeddings
-    idxs = np.argsort(sims[0])[top_k:]
-    return idxs, sims[0,idxs]
+    # Get indices of the top_k most similar embeddings (highest similarity first)
+    idxs = np.argsort(sims[0])[-top_k:][::-1]
+    return idxs, sims[0, idxs]
