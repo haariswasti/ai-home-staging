@@ -380,6 +380,11 @@ def extract_images_from_listing(url, room_type):
         return [], f"Error extracting images: {e}"
 
 # Routes
+@app.route('/health')
+def health_check():
+    """Simple health check endpoint for Railway"""
+    return {'status': 'healthy', 'message': 'AI Home Staging is running'}, 200
+
 @app.route('/')
 def index():
     if 'user_id' not in session:
@@ -993,6 +998,7 @@ if __name__ == '__main__':
     print("🤖 AI model will be loaded on first use to save memory...")
     print("💾 Memory optimization: Lazy loading enabled")
     print("💰 Optimized for free tier (512MB RAM)")
+    print("🏥 Health check endpoint: /health")
     
     # Run the app
     app.run(host='0.0.0.0', port=port, debug=False) 
