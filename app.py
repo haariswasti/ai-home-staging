@@ -25,9 +25,16 @@ import requests
 import tempfile
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from src.data_loader import load_image
-from src.feature_extractor import FeatureExtractor
-from src.retrieval import retrieve
+# Try to import AI modules, but don't fail if they're not available
+try:
+    from src.data_loader import load_image
+    from src.feature_extractor import FeatureExtractor
+    from src.retrieval import retrieve
+    AI_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️  AI modules not available: {e}")
+    print("🤖 AI features will be disabled. Install PyTorch for full functionality.")
+    AI_AVAILABLE = False
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -124,6 +131,11 @@ def allowed_file(filename):
 def process_image(image_path, room_type='bedroom'):
     """Process uploaded image and find similar staged rooms of the selected type"""
     global model, staged_embeddings_cache
+    
+    # Check if AI is available
+    if not AI_AVAILABLE:
+        return "AI features are not available. Please install PyTorch and related dependencies for image processing functionality."
+    
     try:
         # Load model on first use to save memory
         if model is None:
