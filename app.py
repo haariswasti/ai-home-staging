@@ -124,7 +124,15 @@ def allowed_file(filename):
 
 def process_image(image_path, room_type='bedroom'):
     """Process uploaded image and find similar staged rooms of the selected type"""
+    global model
     try:
+        # Load model on first use to save memory
+        if model is None:
+            print("🤖 Loading AI model...")
+            model = FeatureExtractor()
+            model.eval()
+            print("✅ AI model loaded successfully")
+        
         # Load and process image
         img = load_image(image_path).unsqueeze(0)
         # Extract features
@@ -959,24 +967,9 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     
-    print("🤖 Loading AI model...")
-    # Load the feature extractor model
-    model = FeatureExtractor()
-    model.eval()
-    
-    print("📊 Loading staged bedroom embeddings...")
-    # Load embeddings for staged bedroom images
-    try:
-        staged_embeddings = np.load('models/staged_bedroom_embs.npy')
-        staged_names = np.load('models/staged_bedroom_names.npy')
-        print(f"✅ Loaded {len(staged_names)} staged bedroom embeddings")
-    except FileNotFoundError:
-        print("⚠️  No staged bedroom embeddings found. Please run generate_embeddings.py first.")
-        staged_embeddings = None
-        staged_names = None
-    
     print("🚀 Starting AI Home Staging Web Application...")
     print(f"📱 Open your browser to: http://localhost:{port}")
+    print("🤖 AI model will be loaded on first use to save memory...")
     
     # Run the app
     app.run(host='0.0.0.0', port=port, debug=False) 
