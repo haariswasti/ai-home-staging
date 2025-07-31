@@ -20,9 +20,7 @@ from werkzeug.utils import secure_filename
 import numpy as np
 import torch
 import json
-from bs4 import BeautifulSoup
-import requests
-import tempfile
+
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Try to import AI modules, but don't fail if they're not available
