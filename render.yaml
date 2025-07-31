@@ -7,8 +7,4 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
-    disk:
-      name: uploads
-      mountPath: /opt/render/project/src/uploads
-      sizeGB: 1
     plan: free 
