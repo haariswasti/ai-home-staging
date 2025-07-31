@@ -56,8 +56,7 @@ db = SQLAlchemy(app)
 
 # Global variables for AI model and embeddings
 model = None
-staged_embeddings = None
-staged_names = None
+staged_embeddings_cache = {}  # Cache embeddings by room type
 
 # Database Models
 class User(db.Model):
@@ -124,7 +123,7 @@ def allowed_file(filename):
 
 def process_image(image_path, room_type='bedroom'):
     """Process uploaded image and find similar staged rooms of the selected type"""
-    global model
+    global model, staged_embeddings_cache
     try:
         # Load model on first use to save memory
         if model is None:
@@ -138,13 +137,25 @@ def process_image(image_path, room_type='bedroom'):
         # Extract features
         with torch.no_grad():
             query_emb = model(img).cpu().numpy()
-        # Load correct staged embeddings for the room type
-        emb_path = f'models/staged_{room_type}_embs.npy'
-        names_path = f'models/staged_{room_type}_names.npy'
-        if not os.path.exists(emb_path) or not os.path.exists(names_path):
-            return f"No staged reference images found for room type '{room_type}'. Please add staged images and generate embeddings."
-        staged_embs = np.load(emb_path)
-        staged_names = np.load(names_path)
+        
+        # Load staged embeddings for the room type (with caching)
+        if room_type not in staged_embeddings_cache:
+            emb_path = f'models/staged_{room_type}_embs.npy'
+            names_path = f'models/staged_{room_type}_names.npy'
+            if not os.path.exists(emb_path) or not os.path.exists(names_path):
+                return f"No staged reference images found for room type '{room_type}'. Please add staged images and generate embeddings."
+            
+            print(f"📊 Loading embeddings for {room_type}...")
+            staged_embeddings_cache[room_type] = {
+                'embeddings': np.load(emb_path),
+                'names': np.load(names_path)
+            }
+            print(f"✅ Loaded {len(staged_embeddings_cache[room_type]['names'])} {room_type} embeddings")
+        
+        # Get cached embeddings
+        staged_embs = staged_embeddings_cache[room_type]['embeddings']
+        staged_names = staged_embeddings_cache[room_type]['names']
+        
         # Find similar staged rooms
         idxs, sims = retrieve(query_emb, staged_embs, top_k=3)
         results = []
@@ -970,6 +981,7 @@ if __name__ == '__main__':
     print("🚀 Starting AI Home Staging Web Application...")
     print(f"📱 Open your browser to: http://localhost:{port}")
     print("🤖 AI model will be loaded on first use to save memory...")
+    print("💾 Memory optimization: Lazy loading enabled")
     
     # Run the app
     app.run(host='0.0.0.0', port=port, debug=False) 
