@@ -982,6 +982,7 @@ if __name__ == '__main__':
     print(f"📱 Open your browser to: http://localhost:{port}")
     print("🤖 AI model will be loaded on first use to save memory...")
     print("💾 Memory optimization: Lazy loading enabled")
+    print("💰 Optimized for free tier (512MB RAM)")
     
     # Run the app
     app.run(host='0.0.0.0', port=port, debug=False) 
