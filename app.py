@@ -38,11 +38,14 @@ except ImportError as e:
 app = Flask(__name__)
 
 # Production configuration
-if os.environ.get('RENDER'):
-    # Production settings for Render
+if os.environ.get('RENDER') or os.environ.get('RAILWAY'):
+    # Production settings for Render/Railway
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-this')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///home_staging.db')
-    app.config['UPLOAD_FOLDER'] = '/opt/render/project/src/uploads'
+    if os.environ.get('RENDER'):
+        app.config['UPLOAD_FOLDER'] = '/opt/render/project/src/uploads'
+    else:
+        app.config['UPLOAD_FOLDER'] = '/tmp/uploads'  # Railway temp directory
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 else:
     # Development settings
@@ -983,7 +986,7 @@ def create_houses_from_prestage():
     return redirect(url_for('houses'))
 
 if __name__ == '__main__':
-    # Get port from environment variable (for Render) or default to 5000
+    # Get port from environment variable (for Railway/Render) or default to 5000
     port = int(os.environ.get('PORT', 5000))
     
     # Create uploads directory if it doesn't exist
@@ -995,10 +998,12 @@ if __name__ == '__main__':
     
     print("🚀 Starting AI Home Staging Web Application...")
     print(f"📱 Open your browser to: http://localhost:{port}")
+    print(f"🌐 Binding to: 0.0.0.0:{port}")
     print("🤖 AI model will be loaded on first use to save memory...")
     print("💾 Memory optimization: Lazy loading enabled")
     print("💰 Optimized for free tier (512MB RAM)")
     print("🏥 Health check endpoint: /health")
+    print("✅ Ready to accept connections!")
     
-    # Run the app
-    app.run(host='0.0.0.0', port=port, debug=False) 
+    # Run the app with explicit host and port
+    app.run(host='0.0.0.0', port=port, debug=False, threaded=True) 
