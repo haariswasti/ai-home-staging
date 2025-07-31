@@ -54,6 +54,11 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Initialize database
 db = SQLAlchemy(app)
 
+# Global variables for AI model and embeddings
+model = None
+staged_embeddings = None
+staged_names = None
+
 # Database Models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -944,10 +949,34 @@ def create_houses_from_prestage():
     return redirect(url_for('houses'))
 
 if __name__ == '__main__':
+    # Get port from environment variable (for Render) or default to 5000
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Create uploads directory if it doesn't exist
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
     # Create database tables
     with app.app_context():
         db.create_all()
     
+    print("🤖 Loading AI model...")
+    # Load the feature extractor model
+    model = FeatureExtractor()
+    model.eval()
+    
+    print("📊 Loading staged bedroom embeddings...")
+    # Load embeddings for staged bedroom images
+    try:
+        staged_embeddings = np.load('models/staged_bedroom_embs.npy')
+        staged_names = np.load('models/staged_bedroom_names.npy')
+        print(f"✅ Loaded {len(staged_names)} staged bedroom embeddings")
+    except FileNotFoundError:
+        print("⚠️  No staged bedroom embeddings found. Please run generate_embeddings.py first.")
+        staged_embeddings = None
+        staged_names = None
+    
     print("🚀 Starting AI Home Staging Web Application...")
-    print("📱 Open your browser to: http://localhost:5000")
-    app.run(debug=True, host='0.0.0.0', port=5000) 
+    print(f"📱 Open your browser to: http://localhost:{port}")
+    
+    # Run the app
+    app.run(host='0.0.0.0', port=port, debug=False) 
